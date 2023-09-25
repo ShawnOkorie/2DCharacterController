@@ -9,14 +9,14 @@ using UnityEngine.InputSystem;
 // using a PlayerInput component with Unity Events.
 
 [RequireComponent(typeof(PlayerInput))]
-public class Max_InputManager : MonoBehaviour
+public class M_InputManager : MonoBehaviour
 {
     private Vector2 moveDirection = Vector2.zero;
     private bool jumpPressed = false;
     private bool interactPressed = false;
     private bool submitPressed = false;
 
-    private static Max_InputManager instance;
+    private static M_InputManager instance;
 
     private void Awake()
     {
@@ -27,7 +27,7 @@ public class Max_InputManager : MonoBehaviour
         instance = this;
     }
 
-    public static Max_InputManager GetInstance() 
+    public static M_InputManager GetInstance() 
     {
         return instance;
     }

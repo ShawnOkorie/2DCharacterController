@@ -7,7 +7,7 @@
 
 [RequireComponent(typeof(BoxCollider2D))]
 [RequireComponent(typeof(Rigidbody2D))]
-public class Max_CharacterController2D : MonoBehaviour
+public class M_CharacterController2D : MonoBehaviour
 {
 
     [Header("Movement Params")]
@@ -68,13 +68,13 @@ public class Max_CharacterController2D : MonoBehaviour
 
     private void HandleHorizontalMovement()
     {
-        Vector2 moveDirection = Max_InputManager.GetInstance().GetMoveDirection();
+        Vector2 moveDirection = M_InputManager.GetInstance().GetMoveDirection();
         rb.velocity = new Vector2(moveDirection.x * runSpeed, rb.velocity.y);
     }
 
     private void HandleJumping()
     {
-        bool jumpPressed = Max_InputManager.GetInstance().GetJumpPressed();
+        bool jumpPressed = M_InputManager.GetInstance().GetJumpPressed();
         if (isGrounded && jumpPressed)
         {
             isGrounded = false;

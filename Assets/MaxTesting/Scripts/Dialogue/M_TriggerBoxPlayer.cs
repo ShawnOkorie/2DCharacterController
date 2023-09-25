@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TriggerBoxPlayer : MonoBehaviour
+public class M_TriggerBoxPlayer : MonoBehaviour
 {
     private Collider2D _collider2D = new Collider2D();
     private bool draw;
@@ -17,7 +17,7 @@ public class TriggerBoxPlayer : MonoBehaviour
             Debug.Log(hit.collider);
             if (hit.collider == col)
            {
-               col.gameObject.GetComponent<DialogueTrigger>().PlayerInRange = true;
+               col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
            }
         }
     }
@@ -32,11 +32,11 @@ public class TriggerBoxPlayer : MonoBehaviour
             Debug.Log(hit.collider);
             if (hit.collider == col)
             {
-                col.gameObject.GetComponent<DialogueTrigger>().PlayerInRange = true;
+                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
             }
             else
             {
-                col.gameObject.GetComponent<DialogueTrigger>().PlayerInRange = false;
+                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
             }
         }
     }
@@ -45,7 +45,7 @@ public class TriggerBoxPlayer : MonoBehaviour
     {
         if (col.gameObject.CompareTag("Talkable"))
         {
-            col.gameObject.GetComponent<DialogueTrigger>().PlayerInRange = false;
+            col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
             draw = false;
         }
     }
