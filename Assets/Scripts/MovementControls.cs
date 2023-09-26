@@ -35,6 +35,15 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Jump"",
+                    ""type"": ""Button"",
+                    ""id"": ""d5e2b8ba-f938-4503-9abe-95bc94579d4d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -70,6 +79,17 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                     ""action"": ""MoveHorizontal"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a8b7e891-1b0d-4dc3-82d8-8f85e5be681e"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -79,6 +99,7 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
         // Default
         m_Default = asset.FindActionMap("Default", throwIfNotFound: true);
         m_Default_MoveHorizontal = m_Default.FindAction("MoveHorizontal", throwIfNotFound: true);
+        m_Default_Jump = m_Default.FindAction("Jump", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -139,11 +160,13 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Default;
     private IDefaultActions m_DefaultActionsCallbackInterface;
     private readonly InputAction m_Default_MoveHorizontal;
+    private readonly InputAction m_Default_Jump;
     public struct DefaultActions
     {
         private @MovementControls m_Wrapper;
         public DefaultActions(@MovementControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveHorizontal => m_Wrapper.m_Default_MoveHorizontal;
+        public InputAction @Jump => m_Wrapper.m_Default_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -156,6 +179,9 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                 @MoveHorizontal.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMoveHorizontal;
                 @MoveHorizontal.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMoveHorizontal;
                 @MoveHorizontal.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnMoveHorizontal;
+                @Jump.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
+                @Jump.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
+                @Jump.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -163,6 +189,9 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                 @MoveHorizontal.started += instance.OnMoveHorizontal;
                 @MoveHorizontal.performed += instance.OnMoveHorizontal;
                 @MoveHorizontal.canceled += instance.OnMoveHorizontal;
+                @Jump.started += instance.OnJump;
+                @Jump.performed += instance.OnJump;
+                @Jump.canceled += instance.OnJump;
             }
         }
     }
@@ -170,5 +199,6 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
     public interface IDefaultActions
     {
         void OnMoveHorizontal(InputAction.CallbackContext context);
+        void OnJump(InputAction.CallbackContext context);
     }
 }

@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public class CharacterController2D : MonoBehaviour
+public class S_CharacterController2D : MonoBehaviour
 {
     //Refrences
     private BoxCollider2D collider2D;
     private RaycastOrigins raycastOrigins;
+    public CollisionInfo collisionInfo;
     public LayerMask collisionMask;
     
     //Variables
@@ -29,8 +30,10 @@ public class CharacterController2D : MonoBehaviour
     public void Move(Vector3 velocity)
     {
         UpdateRaycastOrigins();
+        collisionInfo.Reset();
         
-        if(velocity.x != 0) HorizontalColisisons(ref velocity); //doesnt calculate if no input
+        //doesnt calculate if no input
+        if(velocity.x != 0) HorizontalColisisons(ref velocity); 
         if(velocity.y != 0) VerticalColisisons(ref velocity);
         
         transform.Translate(velocity);
@@ -45,8 +48,8 @@ public class CharacterController2D : MonoBehaviour
         
         for (int i = 0; i < horizontalRayCount; i++)
         {
-            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight; //same as if(directionY == -1) rayOrigin = raycastorigins.bottomLeft else rayOrigin = raycastOrigins.bottomRight
-
+            //same as if(directionX == -1) rayOrigin = raycastorigins.bottomLeft else rayOrigin = raycastOrigins.bottomRight
+            Vector2 rayOrigin = (directionX == -1) ? raycastOrigins.bottomLeft : raycastOrigins.bottomRight;
             rayOrigin += Vector2.up * (horizontalRaySpacing * i);
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
@@ -57,6 +60,9 @@ public class CharacterController2D : MonoBehaviour
             {
                 velocity.x = (hit.distance - skinWidth) * directionX;
                 rayLength = hit.distance;
+
+                if (directionX == -1) collisionInfo.left = true;
+                else if(directionX == 1) collisionInfo.right = true;
             }
         }
     }
@@ -68,8 +74,8 @@ public class CharacterController2D : MonoBehaviour
         
         for (int i = 0; i < verticalRayCount; i++)
         {
-            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft; // same as if(directionY == -1) rayOrigin = raycastorigins.bottomLeft else rayOrigin = raycastorigins.topLeft
-
+            // same as if(directionY == -1) rayOrigin = raycastorigins.bottomLeft else rayOrigin = raycastorigins.topLeft
+            Vector2 rayOrigin = (directionY == -1) ? raycastOrigins.bottomLeft : raycastOrigins.topLeft;
             rayOrigin += Vector2.right * (verticalRaySpacing * i + velocity.x);
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
@@ -80,18 +86,29 @@ public class CharacterController2D : MonoBehaviour
             {
                 velocity.y = (hit.distance - skinWidth) * directionY;
                 rayLength = hit.distance;
+
+                if (directionY == -1) collisionInfo.below = true;
+                else if (directionY == 1) collisionInfo.above = true;
             }
         }
     }
 
     #endregion
-
-
+    
     #region Collision Info
 
     public struct CollisionInfo
     {
-        
+        public bool above, below;
+        public bool left, right;
+
+        public void Reset()
+        {
+            above = false;
+            below = false;
+            left = false;
+            right = false;
+        }
     }
 
     #endregion    
@@ -106,8 +123,9 @@ public class CharacterController2D : MonoBehaviour
 
     void UpdateRaycastOrigins()
     {
+        //shrinking Bounds by skinWidth
         Bounds bounds = collider2D.bounds;
-        bounds.Expand(skinWidth * -2); //shrinking Bounds by skinWidth
+        bounds.Expand(skinWidth * -2); 
 
         raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
         raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
@@ -117,14 +135,16 @@ public class CharacterController2D : MonoBehaviour
 
     void CalculateRaySpacing()
     {
+        //shrinking Bounds by skinWidth
         Bounds bounds = collider2D.bounds;
-        bounds.Expand(skinWidth * -2); //shrinking Bounds by skinWidth
+        bounds.Expand(skinWidth * -2); 
 
-        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue); //Setting Limit of 2 min Rays
+        //Setting Limit of 2 min Rays
+        horizontalRayCount = Mathf.Clamp(horizontalRayCount, 2, int.MaxValue); 
         verticalRayCount = Mathf.Clamp(verticalRayCount, 2, int.MaxValue);
 
-        horizontalRaySpacing = bounds.size.y / horizontalRayCount - 1;
-        verticalRaySpacing = bounds.size.x / verticalRayCount - 1;
+        horizontalRaySpacing = bounds.size.y / (horizontalRayCount - 1);
+        verticalRaySpacing = bounds.size.x / (verticalRayCount - 1);
     }
     #endregion
    
