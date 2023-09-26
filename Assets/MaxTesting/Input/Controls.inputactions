@@ -6,15 +6,6 @@
             "id": "c6a22e79-45bb-41d5-bee1-058fedc800d9",
             "actions": [
                 {
-                    "name": "jump",
-                    "type": "Button",
-                    "id": "b64f28e5-6f0c-4370-9f80-2a9a33c0fe95",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "move",
                     "type": "Value",
                     "id": "7ea5ec66-e7df-4d26-9425-2b7f30cc5d4b",
@@ -31,29 +22,9 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "submit",
-                    "type": "Button",
-                    "id": "5bb69b73-57ad-4641-8a8a-d98e53ab29a6",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
                 }
             ],
             "bindings": [
-                {
-                    "name": "",
-                    "id": "2d1d03bb-afc3-4197-9957-6c060a0459e4",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
                 {
                     "name": "arrows",
                     "id": "81b563da-b7e3-4c3a-9590-ad7c4c355bda",
@@ -172,17 +143,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "interact",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "9f64681f-141a-46be-b9a6-d679d5ca7702",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "submit",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

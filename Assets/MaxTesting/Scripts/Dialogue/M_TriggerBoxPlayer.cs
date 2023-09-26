@@ -7,36 +7,82 @@ public class M_TriggerBoxPlayer : MonoBehaviour
 {
     private Collider2D _collider2D = new Collider2D();
     private bool draw;
+    [SerializeField] private LayerMask _layerMask;
+
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Talkable"))
         {
-            RaycastHit2D hit = Physics2D.Linecast(transform.position, col.bounds.ClosestPoint(transform.position));
+            RaycastHit2D[] hit = Physics2D.LinecastAll(transform.position, col.transform.position);
             _collider2D = col;
             draw = true;
-            Debug.Log(hit.collider);
-            if (hit.collider == col)
-           {
-               col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
-           }
+            if (hit[0] == GetComponent<Collider2D>())
+            {
+                for (int i = 1; i < hit.Length; i++)
+                {
+                    if (hit[i].collider == col)
+                    {
+                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
+                    }
+                    else
+                    {
+                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < hit.Length; i++)
+                {
+                    if (hit[i].collider == col)
+                    {
+                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
+                    }
+                    else
+                    {
+                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
+                        return;
+                    }
+                }
+            }
         }
     }
 
     private void OnTriggerStay2D(Collider2D col)
     {
-        if (col.gameObject.CompareTag("Talkable"))
+        if (!col.gameObject.CompareTag("Talkable")) return;
+        RaycastHit2D[] hit = Physics2D.LinecastAll(transform.position, col.transform.position);
+        _collider2D = col;
+        draw = true;
+        if (hit[0] == GetComponent<Collider2D>())
         {
-            RaycastHit2D hit = Physics2D.Linecast(transform.position, col.bounds.ClosestPoint(transform.position));
-            _collider2D = col;
-            draw = true;
-            Debug.Log(hit.collider);
-            if (hit.collider == col)
+            for (int i = 1; i < hit.Length; i++)
             {
-                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
+                if (hit[i].collider == col)
+                {
+                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
+                }
+                else
+                {
+                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
+                    return;
+                }
             }
-            else
+        }
+        else
+        {
+            for (int i = 0; i < hit.Length; i++)
             {
-                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
+                if (hit[i].collider == col)
+                {
+                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
+                }
+                else
+                {
+                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
+                    return;
+                }
             }
         }
     }
@@ -55,7 +101,7 @@ public class M_TriggerBoxPlayer : MonoBehaviour
     {
         if (draw)
         {
-            Gizmos.DrawLine(transform.position, _collider2D.bounds.ClosestPoint(transform.position));
+            Gizmos.DrawLine(transform.position, _collider2D.transform.position);
         }
         
     }
