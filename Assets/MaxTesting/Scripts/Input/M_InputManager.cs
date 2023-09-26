@@ -13,6 +13,7 @@ public class M_InputManager : MonoBehaviour
 {
     private Vector2 moveDirection = Vector2.zero;
     private bool interactPressed = false;
+    private bool submitPressed = false;
     
 
     private static M_InputManager instance;
@@ -55,6 +56,18 @@ public class M_InputManager : MonoBehaviour
         } 
     }
     
+    public void SubmitPressed(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            submitPressed = true;
+        }
+        else if (context.canceled)
+        {
+            submitPressed = false;
+        } 
+    }
+    
 
     public Vector2 GetMoveDirection() 
     {
@@ -70,6 +83,13 @@ public class M_InputManager : MonoBehaviour
     {
         bool result = interactPressed;
         interactPressed = false;
+        return result;
+    }
+    
+    public bool GetSubmitPressed() 
+    {
+        bool result = submitPressed;
+        submitPressed = false;
         return result;
     }
 

@@ -5,104 +5,77 @@ using UnityEngine;
 
 public class M_TriggerBoxPlayer : MonoBehaviour
 {
-    private Collider2D _collider2D = new Collider2D();
-    private bool draw;
-    [SerializeField] private LayerMask _layerMask;
-
     private void OnTriggerEnter2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Talkable"))
         {
             RaycastHit2D[] hit = Physics2D.LinecastAll(transform.position, col.transform.position);
-            _collider2D = col;
-            draw = true;
-            if (hit[0] == GetComponent<Collider2D>())
+            List<GameObject> raySave = new List<GameObject>();
+            foreach (RaycastHit2D hit2D in hit)
             {
-                for (int i = 1; i < hit.Length; i++)
+               raySave.Add(hit2D.transform.gameObject); 
+            }
+            for (int i = 0; i < raySave.Count; i++)
+            {
+                if (raySave[i] == gameObject)
                 {
-                    if (hit[i].collider == col)
-                    {
-                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
-                    }
-                    else
-                    {
-                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
-                        return;
-                    }
+                    raySave.RemoveAt(i);
+                    i--;
                 }
+            }
+            foreach (GameObject save in raySave)
+            {
+                print(save.name);
+            }
+
+            if (raySave[0].CompareTag("Talkable"))
+            {
+                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
             }
             else
             {
-                for (int i = 0; i < hit.Length; i++)
-                {
-                    if (hit[i].collider == col)
-                    {
-                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
-                    }
-                    else
-                    {
-                        col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
-                        return;
-                    }
-                }
+                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
             }
         }
     }
-
     private void OnTriggerStay2D(Collider2D col)
     {
-        if (!col.gameObject.CompareTag("Talkable")) return;
-        RaycastHit2D[] hit = Physics2D.LinecastAll(transform.position, col.transform.position);
-        _collider2D = col;
-        draw = true;
-        if (hit[0] == GetComponent<Collider2D>())
+        if (col.gameObject.CompareTag("Talkable"))
         {
-            for (int i = 1; i < hit.Length; i++)
+            RaycastHit2D[] hit = Physics2D.LinecastAll(transform.position, col.transform.position);
+            List<GameObject> raySave = new List<GameObject>();
+            foreach (RaycastHit2D hit2D in hit)
             {
-                if (hit[i].collider == col)
+                raySave.Add(hit2D.transform.gameObject); 
+            }
+            for (int i = 0; i < raySave.Count; i++)
+            {
+                if (raySave[i] == gameObject)
                 {
-                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
-                }
-                else
-                {
-                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
-                    return;
+                    raySave.RemoveAt(i);
+                    i--;
                 }
             }
-        }
-        else
-        {
-            for (int i = 0; i < hit.Length; i++)
+            foreach (GameObject save in raySave)
             {
-                if (hit[i].collider == col)
-                {
-                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
-                }
-                else
-                {
-                    col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
-                    return;
-                }
+                print(save.name);
+            }
+
+            if (raySave[0].CompareTag("Talkable"))
+            {
+                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = true;
+            }
+            else
+            {
+                col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
             }
         }
     }
-
     private void OnTriggerExit2D(Collider2D col)
     {
         if (col.gameObject.CompareTag("Talkable"))
         {
             col.gameObject.GetComponent<M_DialogueTrigger>().PlayerInRange = false;
-            draw = false;
         }
-    }
-
-
-    private void OnDrawGizmos()
-    {
-        if (draw)
-        {
-            Gizmos.DrawLine(transform.position, _collider2D.transform.position);
-        }
-        
     }
 }

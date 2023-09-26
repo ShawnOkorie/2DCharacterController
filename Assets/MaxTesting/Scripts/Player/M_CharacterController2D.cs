@@ -29,10 +29,10 @@ public class M_CharacterController2D : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // if (DialogueManager.GetInstance().dialogueIsPlaying)
-        // {
-        //     return;
-        // }
+        if (M_DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+            return;
+        }
 
         HandleMovement();
     }
