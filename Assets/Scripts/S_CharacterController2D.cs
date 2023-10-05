@@ -9,7 +9,7 @@ public class S_CharacterController2D : MonoBehaviour
     //Refrences
     private BoxCollider2D collider2D;
     private RaycastOrigins raycastOrigins;
-    public CollisionInfo collisionInfo;
+    public CollisionInfo collisions;
     public LayerMask collisionMask;
     
     //Variables
@@ -21,6 +21,8 @@ public class S_CharacterController2D : MonoBehaviour
     private float horizontalRaySpacing;
     private float verticalRaySpacing;
 
+    private float maxClimbAngle = 75;
+
     private void Start()
     {
         collider2D = GetComponent<BoxCollider2D>();
@@ -30,7 +32,7 @@ public class S_CharacterController2D : MonoBehaviour
     public void Move(Vector3 velocity)
     {
         UpdateRaycastOrigins();
-        collisionInfo.Reset();
+        collisions.Reset();
         
         //doesnt calculate if no input
         if(velocity.x != 0) HorizontalColisisons(ref velocity); 
@@ -39,6 +41,24 @@ public class S_CharacterController2D : MonoBehaviour
         transform.Translate(velocity);
     }
 
+    private void ClimbSlope(ref Vector3 velocity, float slopeAngle)
+    {
+        float moveDistance = Mathf.Abs(velocity. x);
+        
+        // prevent overwriting of velocity y so jump is possible
+        float climbVelocitY = Mathf.Sin(slopeAngle * Mathf.Deg2Rad) * moveDistance;
+
+        if (velocity.y <= climbVelocitY)
+        {
+            velocity.y = climbVelocitY;
+            velocity.x = Mathf.Cos(slopeAngle * Mathf.Deg2Rad) * moveDistance * Mathf.Sign(velocity.x);
+            
+            collisions.below = true;
+            collisions.isClimbingSlope = true;
+            collisions.slopeAngle = slopeAngle;
+        }
+    }
+    
     #region Collision Detection
 
     private void HorizontalColisisons(ref Vector3 velocity)
@@ -58,15 +78,36 @@ public class S_CharacterController2D : MonoBehaviour
 
             if (hit)
             {
-                velocity.x = (hit.distance - skinWidth) * directionX;
-                rayLength = hit.distance;
+                //slope angle = surface normal and global up
+                float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 
-                if (directionX == -1) collisionInfo.left = true;
-                else if(directionX == 1) collisionInfo.right = true;
+                if (i == 0 && slopeAngle <= maxClimbAngle)
+                {
+                    float distanceToSlopeStart = 0;
+                    if (slopeAngle != collisions.slopeAngleOld)
+                    {
+                        distanceToSlopeStart = hit.distance - skinWidth;
+                        velocity.x -= distanceToSlopeStart * directionX;
+                    }
+                    ClimbSlope(ref velocity, slopeAngle);
+
+                    velocity.x += distanceToSlopeStart * directionX;
+                }
+                
+                if (!collisions.isClimbingSlope || slopeAngle > maxClimbAngle)
+                {
+                    velocity.x = (hit.distance - skinWidth) * directionX;
+                    rayLength = hit.distance;
+
+                    if (collisions.isClimbingSlope) velocity.y = Mathf.Tan(collisions.slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x);
+                    
+                    if (directionX == -1) collisions.left = true;
+                    else if(directionX == 1) collisions.right = true;
+                }
+                    
             }
         }
     }
-    
     private void VerticalColisisons(ref Vector3 velocity)
     {
         float directionY = Mathf.Sign(velocity.y);
@@ -87,8 +128,10 @@ public class S_CharacterController2D : MonoBehaviour
                 velocity.y = (hit.distance - skinWidth) * directionY;
                 rayLength = hit.distance;
 
-                if (directionY == -1) collisionInfo.below = true;
-                else if (directionY == 1) collisionInfo.above = true;
+                if (collisions.isClimbingSlope) velocity.x = velocity.y / Mathf.Tan(collisions.slopeAngle * Mathf.Deg2Rad) * Mathf.Sign(velocity.x);
+                
+                if (directionY == -1) collisions.below = true;
+                else if (directionY == 1) collisions.above = true;
             }
         }
     }
@@ -101,6 +144,8 @@ public class S_CharacterController2D : MonoBehaviour
     {
         public bool above, below;
         public bool left, right;
+        public bool isClimbingSlope;
+        public float slopeAngle, slopeAngleOld;
 
         public void Reset()
         {
@@ -108,6 +153,10 @@ public class S_CharacterController2D : MonoBehaviour
             below = false;
             left = false;
             right = false;
+            isClimbingSlope = false;
+
+            slopeAngleOld = slopeAngle;
+            slopeAngle = 0;
         }
     }
 

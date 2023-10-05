@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,16 +14,17 @@ public class S_PlayerInputManager : MonoBehaviour
     private Vector2 input;
     
     private Vector3 velocity;
+    private float velocityXSmoothing;
     public float movespeed = 5;
 
     [SerializeField] private float jumpHeight = 4;
     [SerializeField] private float timeToJumpApex = .4f;
+    [SerializeField] private float accelTimeGround = .1f;
+    [SerializeField] private float accelTimeAir = .2f;
 
     private float gravity;
     private float jumpVelocity;
     private bool jumpTrigger;
-    
-    
 
     void Start()
     {
@@ -39,7 +41,9 @@ public class S_PlayerInputManager : MonoBehaviour
         if (jumpTrigger) jumpTrigger = false;
         else ResetGravity();
         
-        velocity.x = input.x * movespeed;
+        float targetvelocityX = input.x * movespeed;
+
+        velocity.x = Mathf.SmoothDamp(velocity.x, targetvelocityX, ref velocityXSmoothing, (controller2D.collisions.below) ? accelTimeGround : accelTimeAir);
         velocity.y += gravity * Time.fixedDeltaTime;
        
         controller2D.Move(velocity * Time.deltaTime);
@@ -47,7 +51,7 @@ public class S_PlayerInputManager : MonoBehaviour
 
     void ResetGravity()
     {
-        if (controller2D.collisionInfo.above || controller2D.collisionInfo.below) velocity.y = 0;
+        if (controller2D.collisions.above || controller2D.collisions.below) velocity.y = 0;
     }
 
     public void MoveHorizontal(InputAction.CallbackContext context)
@@ -57,7 +61,7 @@ public class S_PlayerInputManager : MonoBehaviour
     
     public void Jump(InputAction.CallbackContext context)
     {
-        if (controller2D.collisionInfo.below)
+        if (controller2D.collisions.below)
         {
             jumpTrigger = true;
             velocity.y = jumpVelocity;
