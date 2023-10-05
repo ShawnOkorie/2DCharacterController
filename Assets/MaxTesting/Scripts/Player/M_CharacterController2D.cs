@@ -51,7 +51,9 @@ public class M_CharacterController2D : MonoBehaviour
             _animation.SetFloat("Horizontal", moveDirection.x);
             _animation.SetFloat("Vertical", moveDirection.y);
         }
+
         
+
     }
     
 

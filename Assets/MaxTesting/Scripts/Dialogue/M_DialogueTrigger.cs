@@ -31,6 +31,10 @@ public class M_DialogueTrigger : MonoBehaviour
                 M_DialogueManager.GetInstance().EnterDialogueMode(inkJson);
             }
         }
+        else
+        {
+            visualCue.SetActive(false);
+        }
         
     }
 }
