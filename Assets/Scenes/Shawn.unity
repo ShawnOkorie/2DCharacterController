@@ -373,7 +373,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 195643371}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.45, y: 1.8, z: 0}
+  m_LocalPosition: {x: -4.12, y: -0.28, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1213,14 +1213,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1889631563}
-  m_LocalRotation: {x: -0, y: -0, z: 0.17640415, w: 0.98431784}
-  m_LocalPosition: {x: 1.15, y: 0.23, z: 0.04279958}
+  m_LocalRotation: {x: -0, y: -0, z: 0.0017367988, w: 0.9999985}
+  m_LocalPosition: {x: -2.81, y: 4.34, z: 0.04279958}
   m_LocalScale: {x: 6.0267987, y: 0.3125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 20.321}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0.199}
 --- !u!1 &1945542318
 GameObject:
   m_ObjectHideFlags: 0
@@ -1325,7 +1325,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1945542318}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.52, y: 0.85, z: 0.04279958}
+  m_LocalPosition: {x: -1.14, y: -0.43, z: 0.04279958}
   m_LocalScale: {x: 2.4890945, y: 0.33023992, z: 0.29289}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1347,9 +1347,9 @@ MonoBehaviour:
   collisionMask:
     serializedVersion: 2
     m_Bits: 0
-  horizontalRayCount: 4
+  horizontalRayCount: 8
   verticalRayCount: 4
   passengerMask:
     serializedVersion: 2
     m_Bits: 8
-  platformMovement: {x: 0, y: 1, z: 0}
+  platformMovement: {x: -1, y: 0, z: 0}

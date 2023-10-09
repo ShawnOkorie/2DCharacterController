@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class S_CharacterController2D : S_RaycastController
 {
-    
     public CollisionInfo collisions;
     
     private float maxClimbAngle = 75;
@@ -17,7 +16,7 @@ public class S_CharacterController2D : S_RaycastController
         base.Start();
     }
 
-    public void Move(Vector3 velocity)
+    public void Move(Vector3 velocity, bool standingOnPlatform = false)
     {
         collisions.velocityOld = velocity;
         
@@ -30,6 +29,11 @@ public class S_CharacterController2D : S_RaycastController
         if(velocity.y != 0) VerticalColisisons(ref velocity);
         
         transform.Translate(velocity);
+
+        if (standingOnPlatform == true)
+        {
+            collisions.below = true; 
+        }
     }
 
     private void ClimbSlope(ref Vector3 velocity, float slopeAngle)
@@ -65,8 +69,6 @@ public class S_CharacterController2D : S_RaycastController
             {
                 if (Mathf.Sign(hit.normal.x) == directionX)
                 {
-                    print(hit.normal + " " + hit.normal.x);
-                    
                     if (hit.distance - skinWidth <= Mathf.Tan(slopeAngle * Mathf.Deg2Rad) * Mathf.Abs(velocity.x))
                     {
                         float moveDistance = Mathf.Abs(velocity.x);
@@ -98,11 +100,11 @@ public class S_CharacterController2D : S_RaycastController
             rayOrigin += Vector2.up * (horizontalRaySpacing * i);
 
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.right * directionX, rayLength, collisionMask);
-            
-            Debug.DrawRay(rayOrigin ,Vector2.right * directionX * rayLength, Color.red);
 
             if (hit)
             {
+                if (hit.distance == 0) continue;
+                
                 //slope angle = surface normal and global up
                 float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
 

@@ -15,10 +15,10 @@ using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-public partial class @MovementControls : IInputActionCollection2, IDisposable
+public partial class S_MovementControls : IInputActionCollection2, IDisposable
 {
     public InputActionAsset asset { get; }
-    public @MovementControls()
+    public S_MovementControls()
     {
         asset = InputActionAsset.FromJson(@"{
     ""name"": ""MovementControls"",
@@ -163,8 +163,8 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_Jump;
     public struct DefaultActions
     {
-        private @MovementControls m_Wrapper;
-        public DefaultActions(@MovementControls wrapper) { m_Wrapper = wrapper; }
+        private S_MovementControls m_Wrapper;
+        public DefaultActions(S_MovementControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @MoveHorizontal => m_Wrapper.m_Default_MoveHorizontal;
         public InputAction @Jump => m_Wrapper.m_Default_Jump;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
