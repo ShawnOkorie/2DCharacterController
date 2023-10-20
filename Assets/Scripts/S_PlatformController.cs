@@ -1,52 +1,96 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class S_PlatformController : S_RaycastController
 {
     [SerializeField] private LayerMask passengerMask;
-    
-    [SerializeField] private Vector3 platformMovement;
 
     private List<Passengermovement> passengermovement;
 
     private Dictionary<Transform, S_CharacterController2D> passengerDictionary =
         new Dictionary<Transform, S_CharacterController2D>();
 
+    [SerializeField] private float speed;
+    [SerializeField] private bool isCyclic;
+    [SerializeField] private float waitTime;
+    private float nextMoveTime;
+
+    [SerializeField] [Range(0,2)] private float easeAmount;
+    
+    [SerializeField] private Vector3[] localWaypoints;
+    private Vector3[] globalWaypoints;
+    private int previousWaypointIndex;
+    private float percentDistanceMoved;
+    
     protected override void Start()
     {
         base.Start();
+
+        globalWaypoints = new Vector3[localWaypoints.Length];
+
+        for (int i = 0; i < localWaypoints.Length; i++)
+        {
+            globalWaypoints[i] = localWaypoints[i] + transform.position;
+        }
     }
     
     private void Update()
     {
         UpdateRaycastOrigins();
         
-        Vector3 velocity = platformMovement * Time.deltaTime;
+        Vector3 velocity = CalculatePlatformMovement();
         
         CalculatePassengerMovement(velocity);
         
         MovePassengers(true);
-        transform.Translate(velocity);
+        transform.Translate(velocity);  
         MovePassengers(false);
     }
-
-    private void MovePassengers(bool beforeMovePlatform)
+    private Vector3 CalculatePlatformMovement()
     {
-        foreach (Passengermovement passenger in passengermovement)
-        {
-            // saving passenger component in dictionary for performance, only 1 call the first time it gets moved
-            if(!passengerDictionary.ContainsKey(passenger.transform)) 
-                passengerDictionary.Add(passenger.transform, passenger.transform.GetComponent<S_CharacterController2D>());
+        if (Time.time < nextMoveTime) return Vector3.zero;
+        
+        //prevent index out of bounds resets to 0 when index > length
+        previousWaypointIndex %= globalWaypoints.Length;
+        int nextWaypointIndex = (previousWaypointIndex + 1) % globalWaypoints.Length;
+        
+        float waypointDistance = Vector3.Distance(globalWaypoints[previousWaypointIndex], globalWaypoints[nextWaypointIndex]);
+        percentDistanceMoved += Time.deltaTime * speed / waypointDistance;
+        percentDistanceMoved = Mathf.Clamp01(percentDistanceMoved);
+
+        float easedPercentDistanceMoved = EasePlatformMovement(percentDistanceMoved);
             
-            if (passenger.moveBeforePlatform == beforeMovePlatform) 
-                passengerDictionary[passenger.transform].Move(passenger.velocity, passenger.isOnPlatform);
+        Vector3 newPos = Vector3.Lerp(globalWaypoints[previousWaypointIndex], globalWaypoints[nextWaypointIndex], easedPercentDistanceMoved);
+
+        if (percentDistanceMoved >= 1)
+        {
+            percentDistanceMoved = 0;
+            previousWaypointIndex ++;
+
+            if (!isCyclic)
+            {
+                if (previousWaypointIndex >= globalWaypoints.Length - 1)
+                {
+                    previousWaypointIndex = 0;
+                    Array.Reverse(globalWaypoints);
+                }
+            }
+            
+            nextMoveTime = Time.time + waitTime;
         }
         
+        return newPos - transform.position;
     }
-    
+
+    float EasePlatformMovement(float x)
+    {
+        float a = easeAmount + 1;
+        return Mathf.Pow(x,a) / (Mathf.Pow(x,a) + Mathf.Pow(1-x,a));
+    }
+
     private void CalculatePassengerMovement(Vector3 velocity)
     {
         HashSet<Transform> movedPassangers = new HashSet<Transform>();
@@ -54,6 +98,8 @@ public class S_PlatformController : S_RaycastController
 
         float directionX = Mathf.Sign(velocity.x);
         float directionY = Mathf.Sign(velocity.y);
+        
+        //TODO: Fix diagonal downward movement
         
         //Vertically moving Platform
         if (velocity.y != 0)
@@ -87,7 +133,7 @@ public class S_PlatformController : S_RaycastController
                 }
             }
         }
-
+        
         //horizontally moving platform pushing the character
         if (velocity.x != 0)
         {
@@ -123,7 +169,7 @@ public class S_PlatformController : S_RaycastController
         //character on top of horizontally or downward moving platform
         if (directionY == -1 || velocity.y == 0 && velocity.x != 0)
         {
-            float rayLength = skinWidth * 2;
+            float rayLength = skinWidth * 3;
 
             for (int i = 0; i < verticalRayCount; i++)
             {
@@ -132,7 +178,7 @@ public class S_PlatformController : S_RaycastController
 
                 RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up, rayLength, passengerMask);
 
-                Debug.DrawRay(rayOrigin, Vector2.up * rayLength, Color.red);
+                Debug.DrawRay(rayOrigin, Vector2.up * rayLength, Color.blue);
 
                 if (hit)
                 {
@@ -151,6 +197,19 @@ public class S_PlatformController : S_RaycastController
         }
     }
 
+    private void MovePassengers(bool moveBeforePlatform)
+    {
+        foreach (Passengermovement passenger in passengermovement)
+        {
+            // saving passenger component in dictionary for performance, only 1 call the first time it gets moved
+            if(!passengerDictionary.ContainsKey(passenger.transform)) 
+                passengerDictionary.Add(passenger.transform, passenger.transform.GetComponent<S_CharacterController2D>());
+            
+            if (passenger.moveBeforePlatform == moveBeforePlatform) 
+                passengerDictionary[passenger.transform].Move(passenger.velocity, passenger.isOnPlatform);
+        }
+    }
+    
     struct Passengermovement
     {
         public Transform transform;
@@ -167,4 +226,26 @@ public class S_PlatformController : S_RaycastController
         }
 
     }
+    #if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (localWaypoints != null)
+        {
+            Gizmos.color = Color.green;
+            float size = 0.3f;
+
+            for (int i = 0; i < localWaypoints.Length; i++)
+            {
+                Vector3 globalWaypointPos = (Application.isPlaying) ? globalWaypoints[i] : localWaypoints[i] + transform.position; 
+                Gizmos.DrawLine(globalWaypointPos - new Vector3(0.5f, 0.5f) * size, globalWaypointPos + new Vector3(0.5f, 0.5f) * size);
+                Gizmos.DrawLine(globalWaypointPos - new Vector3(-0.5f, 0.5f) * size, globalWaypointPos + new Vector3(-0.5f, 0.5f) * size);
+                
+                GUI.color = Color.green;
+                UnityEditor.Handles.Label(globalWaypointPos + Vector3.right * 0.15f, i.ToString());
+            }
+            
+            
+        }
+    }
+    #endif
 }

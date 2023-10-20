@@ -11,30 +11,34 @@ public class S_CharacterController2D : S_RaycastController
     private float maxClimbAngle = 75;
     private float maxDecendAngle = 75;
 
+    private bool standingOnPlatform;
+
     protected override void Start()
     {
         base.Start();
+
+        collisions.faceDirection = 1;
     }
 
     public void Move(Vector3 velocity, bool standingOnPlatform = false)
     {
-        collisions.velocityOld = velocity;
-        
         UpdateRaycastOrigins();
         collisions.Reset();
-        
-        //doesnt calculate if no input
+        collisions.velocityOld = velocity;
+        this.standingOnPlatform = standingOnPlatform;
+
+        if (velocity.x != 0) collisions.faceDirection = (int) Mathf.Sign(velocity.x);
+            
         if(velocity.y < 0) DescendSlope(ref velocity);
-        if(velocity.x != 0) HorizontalColisisons(ref velocity); 
-        if(velocity.y != 0) VerticalColisisons(ref velocity);
-        
+        HorizontalColisisons(ref velocity); 
+        if(velocity.y != 0 || !this.standingOnPlatform) VerticalColisisons(ref velocity); // 
+
         transform.Translate(velocity);
 
-        if (standingOnPlatform == true)
-        {
-            collisions.below = true; 
-        }
+        if (this.standingOnPlatform) collisions.below = true;
     }
+
+    #region Slopes
 
     private void ClimbSlope(ref Vector3 velocity, float slopeAngle)
     {
@@ -86,12 +90,17 @@ public class S_CharacterController2D : S_RaycastController
         }
     }
 
+    #endregion
+    
+
     #region Collision Detection
 
     private void HorizontalColisisons(ref Vector3 velocity)
     {
-        float directionX = Mathf.Sign(velocity.x);
+        float directionX = collisions.faceDirection;
         float rayLength = Mathf.Abs(velocity.x) + skinWidth;
+
+        if (Mathf.Abs(velocity.x) < skinWidth) rayLength = skinWidth * 2;
         
         for (int i = 0; i < horizontalRayCount; i++)
         {
@@ -147,7 +156,7 @@ public class S_CharacterController2D : S_RaycastController
     private void VerticalColisisons(ref Vector3 velocity)
     {
         float directionY = Mathf.Sign(velocity.y);
-        float rayLength = Mathf.Abs(velocity.y) + skinWidth;
+        float rayLength = Mathf.Abs(velocity.y) + skinWidth ;
         
         for (int i = 0; i < verticalRayCount; i++)
         {
@@ -158,7 +167,7 @@ public class S_CharacterController2D : S_RaycastController
             RaycastHit2D hit = Physics2D.Raycast(rayOrigin, Vector2.up * directionY, rayLength, collisionMask);
             
             Debug.DrawRay(rayOrigin ,Vector2.up * directionY * rayLength, Color.red);
-
+            
             if (hit)
             {
                 velocity.y = (hit.distance - skinWidth) * directionY;
@@ -206,6 +215,8 @@ public class S_CharacterController2D : S_RaycastController
         public bool isDecendingSlope;
         public float slopeAngle, slopeAngleOld;
         public Vector3 velocityOld;
+
+        public int faceDirection;
 
         public void Reset()
         {

@@ -38,7 +38,8 @@ public class S_RaycastController : MonoBehaviour
         //shrinking Bounds by skinWidth
         Bounds bounds = collider2D.bounds;
         bounds.Expand(skinWidth * -2); 
-
+        
+        // if we need rotated moving platforms convert to world space from local
         raycastOrigins.bottomLeft = new Vector2(bounds.min.x, bounds.min.y);
         raycastOrigins.bottomRight = new Vector2(bounds.max.x, bounds.min.y);
         raycastOrigins.topLeft = new Vector2(bounds.min.x, bounds.max.y);
