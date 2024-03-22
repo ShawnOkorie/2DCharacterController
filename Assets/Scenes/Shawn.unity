@@ -248,6 +248,7 @@ GameObject:
   - component: {fileID: 195643373}
   - component: {fileID: 195643372}
   - component: {fileID: 195643378}
+  - component: {fileID: 195643379}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -268,15 +269,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movespeed: 7
-  jumpHeight: 2.5
+  gravityMultiplier: 1
+  maxJumpHeight: 4
+  minJumpHeight: 1
   timeToJumpApex: 0.4
   accelTimeGround: 0.1
   accelTimeAir: 0.2
   wallSlideSpeedMax: 3
   wallStickTime: 0.25
-  wallJumpClimb: {x: 7.5, y: 16}
-  wallJumpOff: {x: 8.5, y: 7}
-  wallJumpLeap: {x: 18, y: 17}
+  wallJumpClimbVector: {x: 7.5, y: 16}
+  wallJumpOffVector: {x: 8.5, y: 7}
+  wallJumpLeapVector: {x: 18, y: 17}
+  wallStickEnabled: 1
+  wallJumpEnabled: 1
+  wallClimbEnabled: 1
+  variableJumpEnabled: 1
+  doubleJumpEnabled: 1
 --- !u!114 &195643373
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,7 +411,19 @@ MonoBehaviour:
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   m_DeviceRegainedEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -411,22 +431,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ActionEvents:
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 195643372}
-        m_TargetAssemblyTypeName: S_PlayerInputManager, Assembly-CSharp
-        m_MethodName: MoveHorizontal
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 6e1648c3-4f14-4723-a694-0eea48e3e6f5
-    m_ActionName: Default/MoveHorizontal[/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 195643372}
@@ -443,11 +447,55 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: d5e2b8ba-f938-4503-9abe-95bc94579d4d
     m_ActionName: Default/MoveVertical[/Keyboard/s,/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 195643372}
+        m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
+        m_MethodName: MoveHorizontal
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 6e1648c3-4f14-4723-a694-0eea48e3e6f5
+    m_ActionName: Default/MoveHorizontal[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 195643372}
+        m_TargetAssemblyTypeName: PlayerManager, Assembly-CSharp
+        m_MethodName: MoveVertical
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1d9d3ca9-1160-408a-b4d5-75f7073cdede
+    m_ActionName: Default/MoveHorizontal1[/Keyboard/a,/Keyboard/d]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Default
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &195643379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195643371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0dcecdbc375b6341974165df7e4206b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1202,7 +1250,7 @@ GameObject:
   - component: {fileID: 1706720347}
   m_Layer: 7
   m_Name: Obstacle (4)
-  m_TagString: Untagged
+  m_TagString: Through
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1291,8 +1339,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1706720346}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.87, y: 1.11, z: 0.04279958}
-  m_LocalScale: {x: 2.4890945, y: 0.62902844, z: 0.29289}
+  m_LocalPosition: {x: 15.39, y: 1.11, z: 0.04279958}
+  m_LocalScale: {x: 2.4890945, y: 0.2830628, z: 0.29289}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -1511,7 +1559,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1814447561}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 12.84, y: -1.03, z: 0.04279958}
+  m_LocalPosition: {x: 12.68, y: -1.03, z: 0.04279958}
   m_LocalScale: {x: 37.47914, y: 0.3125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1731,7 +1779,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1933498120}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 19.23, y: -1.03, z: 0.04279958}
+  m_LocalPosition: {x: 17.38, y: -1.03, z: 0.04279958}
   m_LocalScale: {x: 37.47914, y: 0.3125, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

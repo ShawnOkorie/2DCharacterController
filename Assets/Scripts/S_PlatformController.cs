@@ -116,7 +116,7 @@ public class S_PlatformController : S_RaycastController
 
                 Debug.DrawRay(rayOrigin, Vector2.up * directionY * rayLength, Color.blue);
 
-                if (hit)
+                if (hit && hit.distance != 0)
                 {
                     //prevent the same passenger from having velocity added for each raycast hit
                     if (!movedPassangers.Contains(hit.transform))
@@ -149,7 +149,7 @@ public class S_PlatformController : S_RaycastController
 
                 Debug.DrawRay(rayOrigin, Vector2.right * directionX * rayLength, Color.blue);
                 
-                if (hit)
+                if (hit && hit.distance != 0))
                 {
                     //prevent the same passenger from having velocity added for each raycast hit
                     if (!movedPassangers.Contains(hit.transform)) 
@@ -180,7 +180,7 @@ public class S_PlatformController : S_RaycastController
 
                 Debug.DrawRay(rayOrigin, Vector2.up * rayLength, Color.blue);
 
-                if (hit)
+                if (hit && hit.distance != 0)
                 {
                     //prevent the same passenger from having velocity added for each raycast hit
                     if (!movedPassangers.Contains(hit.transform))

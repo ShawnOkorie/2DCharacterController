@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Talkable
+  - Through
   layers:
   - Default
   - TransparentFX
