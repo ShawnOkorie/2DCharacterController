@@ -6,7 +6,7 @@ using UnityEngine;
 public class S_CharacterController2D : S_RaycastController
 {
     public CollisionInfo collisions;
-    private Vector2 playerInput;
+    [HideInInspector] public Vector2 playerInput;
     private float maxClimbAngle = 75;
     private float maxDecendAngle = 75;
     private bool standingOnPlatform;

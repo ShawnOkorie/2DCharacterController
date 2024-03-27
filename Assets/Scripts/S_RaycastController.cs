@@ -18,15 +18,17 @@ public class S_RaycastController : MonoBehaviour
     protected float horizontalRaySpacing;
     protected float verticalRaySpacing;
     
-    protected virtual void Start()
+    protected virtual void Awake()
     {
         collider2D = GetComponent<BoxCollider2D>();
-        
+    }
+    
+    protected virtual void Start()
+    {
         CalculateRaySpacing();
     }
     
     #region RaycastOrigins
-   
     protected struct RaycastOrigins
     {
         public Vector2 topLeft, topRight;
