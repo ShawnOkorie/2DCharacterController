@@ -37,7 +37,7 @@ public class S_PlatformController : S_RaycastController
         }
     }
     
-    private void Update()
+    private void FixedUpdate()
     {
         UpdateRaycastOrigins();
         

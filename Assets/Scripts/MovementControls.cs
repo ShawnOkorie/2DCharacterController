@@ -53,6 +53,24 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ToggleConsole"",
+                    ""type"": ""Button"",
+                    ""id"": ""7834ec61-1c91-4944-b1e6-cfcafbba23d6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ConsoleOnReturn"",
+                    ""type"": ""Button"",
+                    ""id"": ""b3e17754-f5a0-47c1-966a-1f3ec6d43b8f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -132,6 +150,28 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                     ""action"": ""MoveVertical"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""71008a3a-d589-4f85-8235-3ca856238093"",
+                    ""path"": ""<Keyboard>/backslash"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleConsole"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""da8eb580-76bd-450f-bf33-9039ad89ed38"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ConsoleOnReturn"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -143,6 +183,8 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
         m_Default_MoveHorizontal = m_Default.FindAction("MoveHorizontal", throwIfNotFound: true);
         m_Default_MoveVertical = m_Default.FindAction("MoveVertical", throwIfNotFound: true);
         m_Default_Jump = m_Default.FindAction("Jump", throwIfNotFound: true);
+        m_Default_ToggleConsole = m_Default.FindAction("ToggleConsole", throwIfNotFound: true);
+        m_Default_ConsoleOnReturn = m_Default.FindAction("ConsoleOnReturn", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -205,6 +247,8 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Default_MoveHorizontal;
     private readonly InputAction m_Default_MoveVertical;
     private readonly InputAction m_Default_Jump;
+    private readonly InputAction m_Default_ToggleConsole;
+    private readonly InputAction m_Default_ConsoleOnReturn;
     public struct DefaultActions
     {
         private @MovementControls m_Wrapper;
@@ -212,6 +256,8 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
         public InputAction @MoveHorizontal => m_Wrapper.m_Default_MoveHorizontal;
         public InputAction @MoveVertical => m_Wrapper.m_Default_MoveVertical;
         public InputAction @Jump => m_Wrapper.m_Default_Jump;
+        public InputAction @ToggleConsole => m_Wrapper.m_Default_ToggleConsole;
+        public InputAction @ConsoleOnReturn => m_Wrapper.m_Default_ConsoleOnReturn;
         public InputActionMap Get() { return m_Wrapper.m_Default; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -230,6 +276,12 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                 @Jump.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnJump;
+                @ToggleConsole.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnToggleConsole;
+                @ToggleConsole.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnToggleConsole;
+                @ToggleConsole.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnToggleConsole;
+                @ConsoleOnReturn.started -= m_Wrapper.m_DefaultActionsCallbackInterface.OnConsoleOnReturn;
+                @ConsoleOnReturn.performed -= m_Wrapper.m_DefaultActionsCallbackInterface.OnConsoleOnReturn;
+                @ConsoleOnReturn.canceled -= m_Wrapper.m_DefaultActionsCallbackInterface.OnConsoleOnReturn;
             }
             m_Wrapper.m_DefaultActionsCallbackInterface = instance;
             if (instance != null)
@@ -243,6 +295,12 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @ToggleConsole.started += instance.OnToggleConsole;
+                @ToggleConsole.performed += instance.OnToggleConsole;
+                @ToggleConsole.canceled += instance.OnToggleConsole;
+                @ConsoleOnReturn.started += instance.OnConsoleOnReturn;
+                @ConsoleOnReturn.performed += instance.OnConsoleOnReturn;
+                @ConsoleOnReturn.canceled += instance.OnConsoleOnReturn;
             }
         }
     }
@@ -252,5 +310,7 @@ public partial class @MovementControls : IInputActionCollection2, IDisposable
         void OnMoveHorizontal(InputAction.CallbackContext context);
         void OnMoveVertical(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnToggleConsole(InputAction.CallbackContext context);
+        void OnConsoleOnReturn(InputAction.CallbackContext context);
     }
 }

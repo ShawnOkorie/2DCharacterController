@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 [RequireComponent (typeof(S_CharacterController2D))]
 public class PlayerManager : MonoBehaviour
@@ -12,6 +13,7 @@ public class PlayerManager : MonoBehaviour
     //References
     private S_CharacterController2D controller2D;
     private S_CharacterController2D.CollisionInfo Collisions => controller2D.collisions;
+    [SerializeField] private ConsoleController consoleController;
 
     //Variables
     private Vector2 input;
@@ -81,7 +83,7 @@ public class PlayerManager : MonoBehaviour
                     velocity.x = 0;
 
                     if (input.x != wallDirectionX && input.x != 0) 
-                        timeToWallUnstick -= Time.deltaTime;
+                        timeToWallUnstick -= Time.fixedDeltaTime;
                 
                     else timeToWallUnstick = wallStickTime;
                 }
@@ -107,57 +109,61 @@ public class PlayerManager : MonoBehaviour
     }
     public void MoveHorizontal(InputAction.CallbackContext context)
     {
+        if (consoleController.showConsole) return;
+
         input.x = context.ReadValue<float>();
     }
     public void MoveVertical(InputAction.CallbackContext context)
     {
+        if (consoleController.showConsole) return;
+        
         input.y = context.ReadValue<float>();
     }
     public void Jump(InputAction.CallbackContext context)
     {
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)      // TODO: replace with action instead of key 
+        if (consoleController.showConsole) return;
+        
+        //TODO: make wall jumping feel better 
+        if (wallSliding)
         {
-            if (wallSliding)
+            canJump = true;
+
+            //Climbing Wall
+            if (wallDirectionX == input.x)
             {
-                canJump = true;
-                //TODO: make wall juping feel better 
-                //Climbing Wall
-                if (wallDirectionX == input.x)
+                if (wallClimbEnabled)
                 {
-                    if (wallClimbEnabled)
-                    {
-                        print("climb");
-                        velocity.x = -wallDirectionX * wallJumpClimbVector.x;
-                        velocity.y = wallJumpClimbVector.y; 
-                    }
-                }
-                //Jumping away from the Wall
-                else if (input.x == 0)
-                {
-                    if (wallJumpEnabled)
-                    {
-                        print("away");
-                        velocity.x = -wallDirectionX * wallJumpLeapVector.x;
-                        velocity.y = wallJumpLeapVector.y;
-                    }
-                }
-                //Jumping Off Wall
-                else if (wallDirectionX != input.x)          
-                {
-                    print("off");
-                    velocity.x = -wallDirectionX * wallJumpOffVector.x;
-                    velocity.y = wallJumpOffVector.y;
+                    print("climb");
+                    velocity.x = -wallDirectionX * wallJumpClimbVector.x;
+                    velocity.y = wallJumpClimbVector.y;
                 }
             }
-        
-            if (Collisions.below)
+            //Jumping away from the Wall
+            else if (input.x == 0)
             {
-                canJump = true;
-                velocity.y = maxJumpVelocity;
+                if (wallJumpEnabled)
+                {
+                    print("away");
+                    velocity.x = -wallDirectionX * wallJumpLeapVector.x;
+                    velocity.y = wallJumpLeapVector.y;
+                }
+            }
+            //Jumping Off Wall
+            else if (wallDirectionX != input.x)
+            {
+                print("off");
+                velocity.x = -wallDirectionX * wallJumpOffVector.x;
+                velocity.y = wallJumpOffVector.y;
             }
         }
 
-        if (Keyboard.current.spaceKey.wasReleasedThisFrame)
+        if (Collisions.below)
+        {
+            canJump = true;
+            velocity.y = maxJumpVelocity;
+        }
+
+        if (context.canceled && variableJumpEnabled)
         {
             if (velocity.y > minJumpVelocity)
             {
@@ -275,7 +281,7 @@ public class PlayerManager : MonoBehaviour
         #endregion
         
         #region Enablers
-            #region Setters
+             #region Setters
                 public void EnableWallStick(bool enable)
                 {
                     wallStickEnabled = enable;

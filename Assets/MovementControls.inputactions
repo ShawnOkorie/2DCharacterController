@@ -31,6 +31,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ToggleConsole",
+                    "type": "Button",
+                    "id": "7834ec61-1c91-4944-b1e6-cfcafbba23d6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ConsoleOnReturn",
+                    "type": "Button",
+                    "id": "b3e17754-f5a0-47c1-966a-1f3ec6d43b8f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -110,6 +128,28 @@
                     "action": "MoveVertical",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "71008a3a-d589-4f85-8235-3ca856238093",
+                    "path": "<Keyboard>/backslash",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleConsole",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "da8eb580-76bd-450f-bf33-9039ad89ed38",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ConsoleOnReturn",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

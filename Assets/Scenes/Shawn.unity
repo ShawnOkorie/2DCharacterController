@@ -268,6 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81afc9a8405440048adb3892df43e0d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consoleController: {fileID: 2033547914}
   movespeed: 7
   gravityMultiplier: 1
   maxJumpHeight: 4
@@ -479,6 +480,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 1d9d3ca9-1160-408a-b4d5-75f7073cdede
     m_ActionName: Default/MoveHorizontal1[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2033547914}
+        m_TargetAssemblyTypeName: ConsoleController, Assembly-CSharp
+        m_MethodName: OnToggleDebug
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 7834ec61-1c91-4944-b1e6-cfcafbba23d6
+    m_ActionName: Default/ToggleConsole[/Keyboard/backslash]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2033547914}
+        m_TargetAssemblyTypeName: ConsoleController, Assembly-CSharp
+        m_MethodName: OnReturn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b3e17754-f5a0-47c1-966a-1f3ec6d43b8f
+    m_ActionName: Default/New action
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Default
@@ -2089,4 +2122,49 @@ Transform:
   - {fileID: 749650556}
   m_Father: {fileID: 589316522}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2033547913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2033547915}
+  - component: {fileID: 2033547914}
+  m_Layer: 0
+  m_Name: Console
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2033547914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033547913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b0a6d517d6a22441bcdf58972213be2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 195643372}
+--- !u!4 &2033547915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033547913}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 14.96634, y: 0.24501733, z: 0.008797536}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
